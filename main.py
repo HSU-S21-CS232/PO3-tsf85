@@ -1,7 +1,11 @@
 import sys
+from PySide2 import QtWidgets
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QLineEdit, QPushButton
-from PySide2.QtCore import QFile, QObject
+from PyQt5.QtWidgets import  QApplication, QLineEdit, QPushButton, QMainWindow, QDialog, QCheckBox, QMessageBox
+from PyQt5.QtCore import QFile, QObject
+from selenium import webdriver
+from PyQt5 import QtGui, QtCore
+from PyQt5 import uic
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -9,37 +13,6 @@ import time
 from collections import Counter
 from matplotlib import pyplot as plot
 
-class BGReviewerModel(QObject):
-
-    #class constructor
-    def __init__(self, ui_file, parent=None):
-
-        #self.calculator = Calculator()
-        #self.last_arithmetic_operation = ArithmeticOperations.NoOp
-
-        #call class parent (QObject) constructor
-        super(BGReviewerModel, self).__init__(parent)
-
-        #load the UI file into Python
-        #ui_file was a string, now it's a proper QT object
-        ui_file = QFile(ui_file)
-        ui_file.open(QFile.ReadOnly)
-        loader = QUiLoader()
-        self.window = loader.load(ui_file)
-
-        #always remember to close files
-        ui_file.close()
-
-        #add event listeners for UI events
-        #self.addEventListeners()
-
-        #show window to the user
-        self.window.show()
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    main_window = BGReviewerModel('bgreviewer.ui')
-    sys.exit(app.exec_())
 
 #===================================
 #clears the file of any prior content
@@ -258,3 +231,101 @@ def bg_lookup(bg_name, cat_file_in1, cat_file_in2, name1, name2):
     #example: copy this to another function to pull specific datasets within the dicts
 
 #bg_lookup("Kemet", "Vasel_cat_list.txt", "Quinn_cat_list.txt", 'Vasel', 'Quinn')
+
+
+#================================================================================
+class BGReviewerModel(QDialog):
+
+    #class constructor
+    def __init__(self):
+
+        super(BGReviewerModel, self).__init__()
+        uic.loadUi('bgreviewer.ui', self)
+
+        self.box1 = self.findChild(QCheckBox, "TVasel")
+        
+        self.box2 = self.findChild(QCheckBox, "Quinn")
+
+        self.button1 = self.findChild(QPushButton, "TopLists")
+        self.button1.clicked.connect(self.TopListsButtonClicked)
+
+        self.button2 = self.findChild(QPushButton, "URLopen")
+        self.button2.clicked.connect(self.URLopenButtonClicked)
+
+        self.button3 = self.findChild(QPushButton, "Match")
+        self.button3.clicked.connect(self.MatchButtonClicked)
+
+        self.button4 = self.findChild(QPushButton, "GraphCat")
+        self.button4.clicked.connect(self.GraphCatButtonClicked)
+        
+        self.button5 = self.findChild(QPushButton, "ListCats")
+        self.button5.clicked.connect(self.ListCatsButtonClicked)
+
+        self.button6 = self.findChild(QPushButton, "BGLookUp")
+        self.button6.clicked.connect(self.BGLookUpButtonClicked)
+
+        self.show()
+
+   
+
+    def TopListsButtonClicked(self):
+        get_vasel_top_list()
+        get_quinn_top_list()
+
+    def ListCatsButtonClicked(self):
+       
+        genre_search("Vasel_list.txt", "Vasel_cat_list.txt")
+        genre_search("Quinn_list.txt", "Quinn_cat_list.txt")
+
+    def URLopenButtonClicked(self):
+        driver = webdriver.Chrome(executable_path="C:\Program Files (x86)\chromedriver")
+        if self.box1.isChecked() == True:
+            url = "https://www.dicetower.com/game-video/tom-vasels-top-100-games-all-time-2021-10-1"
+            driver.get(url)
+        elif self.box2.isChecked() == True:
+            url2 = "https://www.shutupandsitdown.com/videos/quinns-walks-you-through-his-game-collection/"
+            driver.get(url2)
+    #need to figure out how to read in multiple checkboxes
+    def MatchButtonClicked(self):
+        if self.box1.isChecked() == True:
+            txtname1 = "Vasel_list.txt"
+            name1 = "Vasel"
+            if self.box2.isChecked() == True:
+                txtname2 = "Quinn_list.txt"
+                name2 = "Quinn"
+
+            
+        merge_top_lists(txtname1, txtname2, "{}_{}_list.txt".format(name1, name2))
+               
+
+    def GraphCatButtonClicked(self):
+        
+        if self.box1.isChecked() == True:
+            cattxtname1 = "Vasel_cat_list.txt"
+            catname1 = "Vasel"
+            if self.box2.isChecked() == True:
+                cattxtname2 = "Quinn_cat_list.txt"
+                catname2 = "Quinn"
+        compile_data(cattxtname1, cattxtname2 , catname1, catname2)
+
+    def BGLookUpButtonClicked(self):
+        
+        self.le = self.findChild(QLineEdit, "UserGameName")
+        BG_Name = self.le.text()
+        print(BG_Name)
+        if self.box1.isChecked() == True:
+            cattxtname1 = "Vasel_cat_list.txt"
+            catname1 = "Vasel"
+            if self.box2.isChecked() == True:
+                cattxtname2 = "Quinn_cat_list.txt"
+                catname2 = "Quinn"
+        
+        bg_lookup(BG_Name, cattxtname1, cattxtname2 , catname1, catname2)
+
+
+       
+
+
+app = QApplication(sys.argv)
+window = BGReviewerModel()
+app.exec_()
