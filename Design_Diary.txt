@@ -1,0 +1,23 @@
+Well the backend for this was started a little late. My friend was trying to help me add some cool sentiment scraping 
+from Youtube closed captions for the boardgame review videos to try and get some arbitrary quantitative rating system
+set up so I could do some sort of linear regression for bias... It's not ready. I was trying to sneak it in with this,
+but i really just wasted time within the deadline.
+
+Other than that I got frustrated with Pyside and switched to PyQt after having written a decent amount. I also wasted
+a couple of days trying to get some sort of progress bar, or even just a label that updates to indicate that the 
+program is still working and not frozen. This seemed key, as the first two buttons creates and fill the files you 
+need for the rest of the program to work, and they take a while to finish.
+
+The most fun thing is the same as always. Finally understanding what you're parroting from the internet to some extent
+and getting it to work.
+
+as for unresolved issues; I still haven't added more reviewers, so it leaves the program seeming a little lackluster,
+but my previous mistakes of getting lost in more scraping with a deadline detered me from trying. The second thing is 
+not really knowing how to handle the checkboxes dynamically enough. If the right boxes aren't seleceted it'll just break
+the program. Not typing anything into the LineEdit at the bottome before clicking "Do it!" at the bottom will also break
+it.
+
+Advice for a future student would probably be to just try out the simple option given for the whole class if you
+aren't very experienced.
+
+https://github.com/HSU-S21-CS232/PO3-tsf85/blob/main/P03-tsf85.gif
