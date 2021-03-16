@@ -128,7 +128,7 @@
    <property name="text">
     <string>Enter the name of a boardgame that you'd like know the categories for. This will bring up
 a graph showing how many times those categories show up in selected reviewer's top
-boardgame lists. MUST CHECK TWO BOXES UP TOP</string>
+boardgame lists. MUST CHECK TWO BOXES UP TOP AND TYPE IN A BOARDGAME BELOW</string>
    </property>
   </widget>
   <widget class="Line" name="line">
